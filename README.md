@@ -22,6 +22,9 @@ Assets:
 - Attach assets to products.
 - Save the image URL generated in Adobe Commerce back to the asset in Akeneo.
 
+Full sync:
+- Families, Attributes, Products
+- Possibility to choose the sync mode (create or update)
 
 ## Prerequisites
 
@@ -49,12 +52,12 @@ Configure a new Integration to secure the calls to Commerce from App Builder usi
 - In the list of integrations, activate your integration.
 - To configure the starter kit, you will need the integration details (consumer key, consumer secret, access token, and access token secret).
 
-### Install Commerce Eventing module (only required when running Adobe Commerce versions 2.4.4 or 2.4.5) 
+### Install Commerce Eventing module (only required when running Adobe Commerce versions 2.4.4 or 2.4.5)
 Install Adobe I/O Events for Adobe Commerce module in your commerce instance following this [documentation](https://developer.adobe.com/commerce/extensibility/events/installation/)
 
 > **Note**
-> 
-> By upgrading the Adobe I/O Events for Adobe Commerce module to version 1.6.0 or greater, you will benefit from some additional automated steps during onboarding.  
+>
+> By upgrading the Adobe I/O Events for Adobe Commerce module to version 1.6.0 or greater, you will benefit from some additional automated steps during onboarding.
 
 ## Starter Kit first deploy & onboarding
 Following the next steps, you will deploy and onboard the starter kit for the first time. The onboarding process sets up event providers and registrations based on your selection.
@@ -97,4 +100,50 @@ To start the process run the command:
 ```bash
 npm run onboard
 npm run akeneo-event-subscribe
+```
+
+## Full Sync
+To perform a full sync of families, attributes, and products, you need to send requests to the following endpoints:
+
+### Families
+Firstly, you need to sync the families. Families are the attribute sets in Adobe Commerce.
+
+```bash
+curl --request POST \
+  --url https://<namespace>.adobeioruntime.net/api/v1/web/attribute-backoffice/family-sync \
+  --header 'x-gw-ims-org-id: {org-id}' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: ••••••' \
+  --data '{
+      "syncMode": "create|update"
+  }'
+```
+
+### Attributes
+Secondly, you need to sync the attributes. Attributes are the product attributes in Adobe Commerce.
+
+```bash
+curl --request POST \
+  --url https://<namespace>.adobeioruntime.net/api/v1/web/attribute-backoffice/attribute-sync \
+  --header 'x-gw-ims-org-id: {org-id}' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: ••••••' \
+  --data '{
+      "syncMode": "create|update"
+  }'
+```
+
+### Products
+Lastly, you need to sync the products. You can decide on batch size and sync mode (create or update).
+
+```bash
+curl --request POST \
+  --url https://<namespace>.adobeioruntime.net/api/v1/web/product-backoffice/product-sync \
+  --header 'x-gw-ims-org-id: {org-id}' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: ••••••' \
+  --data '{
+      "syncMode": "create|update",
+      "size": 5
+  }'
 ```

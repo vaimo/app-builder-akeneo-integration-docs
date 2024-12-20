@@ -108,6 +108,21 @@ npm run akeneo-event-subscribe
 ## Full Sync
 To perform a full sync of families, attributes, and products, you need to send requests to the following endpoints:
 
+Before running the full sync, you need to obtain the authorization token by running the following command. 
+Replace `{token}`, `{client_id}`, `{secret}`, and `{scope}` with your values from the I/O Management API in the developer console.
+
+![mgm-api.png](docs/mgm-api.png)
+
+```bash
+curl --location 'https://ims-na1.adobelogin.com/ims/token/v3' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--header 'X-API-Key: {{token}}' \
+--data-urlencode 'grant_type=client_credentials' \
+--data-urlencode 'client_id={client_id}' \
+--data-urlencode 'client_secret={secret}' \
+--data-urlencode '{scope}'
+```
+
 ### Families
 Firstly, you need to sync the families. Families are the attribute sets in Adobe Commerce.
 

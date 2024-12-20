@@ -3,6 +3,9 @@ This project leverages Adobe App Builder to integrate Akeneo with Adobe Commerce
 
 This is a reference integration that supports the synchronization of products, attributes, families, and assets. It also includes onboarding scripts and a standardized architecture for developers to build upon, adhering to best practices.
 
+## License
+Refer to the [LICENSE](LICENSE.txt) file.
+
 ## Features:
 ![arch-diagram.png](docs/arch-diagram-1.png)
 

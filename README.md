@@ -38,10 +38,10 @@ Go to the [Adobe developer console](https://developer.adobe.com/console) portal
 - Chose a name and title
 - Select stage workspace or create a new one
 - Add the following API services (select default Oauth server to server)
-  - I/0 events
+  - I/O events
   - Adobe I/O Events for Adobe Commerce
   - I/O management API
-- Download the [workspace configuration JSON](https://developer.adobe.com/commerce/extensibility/events/project-setup/#download-the-workspace-configuration-file) file and save it as `workspace.json` in the `./scripts/onboarding/config` starter kit folder because you will use it to configure Adobe IO Events in commerce afterward.
+- Download the [workspace configuration JSON](https://developer.adobe.com/commerce/extensibility/events/project-setup/#download-the-workspace-configuration-file) file and save it as `workspace.json` in the `./scripts/onboarding/config` folder because you will use it to configure Adobe IO Events in commerce afterward.
 
 ### Configure a new Integration in commerce
 Configure a new Integration to secure the calls to Commerce from App Builder using OAuth by following these steps:
@@ -53,7 +53,7 @@ Configure a new Integration to secure the calls to Commerce from App Builder usi
   ![Alt text](docs/integration-all-apis-access.png "New Integration")
 - Click Save.
 - In the list of integrations, activate your integration.
-- To configure the starter kit, you will need the integration details (consumer key, consumer secret, access token, and access token secret).
+- To configure the project, you will need the integration details (consumer key, consumer secret, access token, and access token secret).
 
 ### Install Commerce Eventing module (only required when running Adobe Commerce versions 2.4.4 or 2.4.5)
 Install Adobe I/O Events for Adobe Commerce module in your commerce instance following this [documentation](https://developer.adobe.com/commerce/extensibility/events/installation/)
@@ -62,8 +62,8 @@ Install Adobe I/O Events for Adobe Commerce module in your commerce instance fol
 >
 > By upgrading the Adobe I/O Events for Adobe Commerce module to version 1.6.0 or greater, you will benefit from some additional automated steps during onboarding.
 
-## Starter Kit first deploy & onboarding
-Following the next steps, you will deploy and onboard the starter kit for the first time. The onboarding process sets up event providers and registrations based on your selection.
+## First deploy & onboarding
+Following the next steps, you will deploy and onboard the project for the first time. The onboarding process sets up event providers and registrations based on your selection.
 
 ### Download the project
 - Download and unzip the project
@@ -76,7 +76,6 @@ Install the npm dependencies using the command:
 npm install
 ```
 
-This step will connect your starter kit project to the App builder project you created earlier.
 Ensure to select the proper Organization > Project > Workspace with the following commands:
 ```bash
 aio login
@@ -97,7 +96,7 @@ Run the following command to deploy the project; this will deploy the runtime ac
 aio app deploy
 ```
 ### Onboarding
-This step will generate the IO Events providers and the registrations for your starter kit project.
+This step will generate the IO Events providers and the registrations needed for the project.
 If your Commerce instance Adobe I/O Events for Adobe Commerce module version 1.6.0 or greater, the module will also be automatically configured by the onboarding script.  
 To start the process run the command:
 ```bash
@@ -111,16 +110,24 @@ To perform a full sync of families, attributes, and products, you need to send r
 Before running the full sync, you need to obtain the authorization token by running the following command. 
 Replace `{token}`, `{client_id}`, `{secret}`, and `{scope}` with your values from the I/O Management API in the developer console.
 
-![mgm-api.png](docs/mgm-api.png)
-
 ```bash
 curl --location 'https://ims-na1.adobelogin.com/ims/token/v3' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
---header 'X-API-Key: {{token}}' \
+--header 'X-API-Key: {token}' \
 --data-urlencode 'grant_type=client_credentials' \
 --data-urlencode 'client_id={client_id}' \
 --data-urlencode 'client_secret={secret}' \
 --data-urlencode '{scope}'
+```
+
+Copy the token from the response:
+
+```json
+{
+    "access_token": "eyJhbGc...",
+    "token_type": "bearer",
+    "expires_in": 86399
+}
 ```
 
 ### Families
@@ -131,7 +138,7 @@ curl --request POST \
   --url https://<namespace>.adobeioruntime.net/api/v1/web/attribute-backoffice/family-sync \
   --header 'x-gw-ims-org-id: {org-id}' \
   --header 'Content-Type: application/json' \
-  --header 'Authorization: ••••••' \
+  --header 'Authorization: Bearer {access_token} \
   --data '{
       "syncMode": "create|update"
   }'
@@ -145,7 +152,7 @@ curl --request POST \
   --url https://<namespace>.adobeioruntime.net/api/v1/web/attribute-backoffice/attribute-sync \
   --header 'x-gw-ims-org-id: {org-id}' \
   --header 'Content-Type: application/json' \
-  --header 'Authorization: ••••••' \
+  --header 'Authorization: Bearer {access_token} \
   --data '{
       "syncMode": "create|update"
   }'
@@ -159,7 +166,7 @@ curl --request POST \
   --url https://<namespace>.adobeioruntime.net/api/v1/web/product-backoffice/product-sync \
   --header 'x-gw-ims-org-id: {org-id}' \
   --header 'Content-Type: application/json' \
-  --header 'Authorization: ••••••' \
+  --header 'Authorization: Bearer {access_token} \
   --data '{
       "syncMode": "create|update",
       "size": 5
